@@ -1,11 +1,8 @@
 <template>
   <div id="app">
-
     <div class="container">
       <img alt="Vue logo" src="./assets/logo.png">
     </div>
-
-   
       <div class="row">
         <div class="col">
           <ul class="list-group">
@@ -15,7 +12,7 @@
           </ul>
         </div>
         <div class="col">
-          <form v-on:submit.prevent="AddTitle">
+          <form v-on:submit.prevent="AddToDo">
             <div class="form-group">
               <label for="exampleTitle">Title</label>
               <input type="text" class="form-control" id="exampleTitle" placeholder="Enter Title">
@@ -31,33 +28,18 @@
           </ul>
         </div>
       </div>
-    
-   
-      
-    
-    <div v-for="item in todoItems" :key="item.id">
-  
-    </div>
-    
-    <hr />
-
-    <div>
-      <input type="text" name="" id="del" placeholder="Order Key">
-      <button v-on:click.prevent="DeleteTitle" > Delete</button>
-    </div>
-
-    <hr />
-    
-  
-
+      <hr />
+      <div>
+        <input type="text" name="" id="del" placeholder="Order Key">
+        <button v-on:click.prevent="DeleteToDo" > Delete</button>
+      </div>
+      <hr />
   </div>
 </template>
 
 <script>
 import TodoItem from './components/UserComponent';
-
 import items from './data/items';
- 
 
 export default {
   name: 'App',
@@ -73,22 +55,21 @@ export default {
     }
   },
   methods: {
-    DeleteTitle: function(){
+    DeleteToDo: function(){
       const del = document.getElementById('del').value;
       const index = this.todoItems.findIndex(item => item.id == del);
 
-      // this.todoItems[index].completed = true;
       if(index > 0){
         this.Ditems.push(this.todoItems[index]);  
       
         this.todoItems.splice(index, 1);
         console.log(this.todoItems.length);
         console.log(this.Ditems.length);
-      }else{
+      } else {
         window.alert("Girilen Değerde Order Bulunamadı")
       }
     },
-    AddTitle: function(){
+    AddToDo: function(){
       const title = document.getElementById('exampleTitle').value;
       console.log(title);
 
@@ -101,12 +82,6 @@ export default {
         this.updateItem = 0;
       }else{
         let itemsLenght = this.todoItems.length + this.Ditems.length;
-        //if(this.todoItems.length > 0){
-        //  itemsLenght = this.todoItems.length;
-        //}
-        //if(this.Ditems.length > 0){
-        //  itemsLenght =+ this.Ditems.length;
-        //}
 
         console.log(itemsLenght);
 
@@ -132,7 +107,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style>
