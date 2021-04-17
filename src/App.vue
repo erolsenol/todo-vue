@@ -1,19 +1,138 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+
+    <div class="container">
+      <img alt="Vue logo" src="./assets/logo.png">
+    </div>
+
+   
+      <div class="row">
+        <div class="col">
+          <ul class="list-group">
+            <li v-on:click.prevent="Clicked(item)" v-for="item in todoItems" :key="item.id" class="list-group-item list-group-item-success">
+              <TodoItem  :username="item"/>
+            </li>
+          </ul>
+        </div>
+        <div class="col">
+          <form v-on:submit.prevent="AddTitle">
+            <div class="form-group">
+              <label for="exampleTitle">Title</label>
+              <input type="text" class="form-control" id="exampleTitle" placeholder="Enter Title">
+            </div>
+            <button type="submit" class="btn btn-primary" id="todoID">Add</button>
+          </form>
+        </div>
+        <div class="col">
+          <ul class="list-group">
+            <li v-on:click.prevent="Clicked(ditem)" v-for="ditem in Ditems" :key="ditem.id" class="list-group-item list-group-item-danger">
+              <TodoItem :username="ditem"/>
+            </li>
+          </ul>
+        </div>
+      </div>
+    
+   
+      
+    
+    <div v-for="item in todoItems" :key="item.id">
+  
+    </div>
+    
+    <hr />
+
+    <div>
+      <input type="text" name="" id="del" placeholder="Order Key">
+      <button v-on:click.prevent="DeleteTitle" > Delete</button>
+    </div>
+
+    <hr />
+    
+  
+
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TodoItem from './components/UserComponent';
+
+import items from './data/items';
+ 
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TodoItem
+  },
+  data: function () {
+    return {
+      
+      todoItems: items,
+      Ditems: [],
+      updateItem: 0
+    }
+  },
+  methods: {
+    DeleteTitle: function(){
+      const del = document.getElementById('del').value;
+      const index = this.todoItems.findIndex(item => item.id == del);
+
+      // this.todoItems[index].completed = true;
+      if(index > 0){
+        this.Ditems.push(this.todoItems[index]);  
+      
+        this.todoItems.splice(index, 1);
+        console.log(this.todoItems.length);
+        console.log(this.Ditems.length);
+      }else{
+        window.alert("Girilen Değerde Order Bulunamadı")
+      }
+    },
+    AddTitle: function(){
+      const title = document.getElementById('exampleTitle').value;
+      console.log(title);
+
+      if(this.updateItem > 0){
+        const index = this.todoItems.findIndex(item => item.id == this.updateItem);
+        this.todoItems[index].title = title;
+
+        document.getElementById('exampleTitle').value = null;
+        document.getElementById('todoID').innerText = "Add";
+        this.updateItem = 0;
+      }else{
+        let itemsLenght = this.todoItems.length + this.Ditems.length;
+        //if(this.todoItems.length > 0){
+        //  itemsLenght = this.todoItems.length;
+        //}
+        //if(this.Ditems.length > 0){
+        //  itemsLenght =+ this.Ditems.length;
+        //}
+
+        console.log(itemsLenght);
+
+        const date = new Date();
+        const djson = JSON.stringify(date);
+
+        const newitem = [{
+          id: itemsLenght + 1,
+          title: title,
+          order: itemsLenght + 1,
+          completed: false,
+          createdOn: djson
+        }];
+
+        this.todoItems.push(newitem[0]);
+        document.getElementById('exampleTitle').value = null;
+      }
+    },
+    Clicked: function(item) {
+      document.getElementById('exampleTitle').value = item.title;
+      document.getElementById('todoID').innerText = "Update";
+      this.updateItem = item.id;
+    }
   }
 }
+
 </script>
 
 <style>
@@ -24,5 +143,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  
 }
+
 </style>
