@@ -1,11 +1,9 @@
 <template>
     <v-app-bar
+      app
       absolute
       color="indigo darken-2"
       dark
-      shrink-on-scroll
-      prominent
-      scroll-target="#scrolling-techniques"
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 

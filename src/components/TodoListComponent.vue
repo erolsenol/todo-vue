@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+ <v-main>
     <v-layout row wrap>
     
       <v-flex xs4>
@@ -57,7 +57,7 @@
       </v-flex>
     </v-layout>
 
-    <v-container>
+   
       <v-img
         alt="Vue logo"
         max-height="200"
@@ -73,16 +73,8 @@
         <v-btn color="error" v-on:click.prevent="DeleteToDo"> Delete</v-btn>
       </div>
       <hr />
-     
-     
-     
-  
-    </v-container>
-
-    <v-footer app>
-      <!-- -->
-    </v-footer>
-  </v-app>
+ 
+  </v-main>
 </template>
 
 <script>
@@ -165,11 +157,5 @@ export default {
 </script>
 
 <style scoped>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+
 </style>

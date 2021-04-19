@@ -1,17 +1,17 @@
 <template>
-  <v-main>
-    <app-bar-component />
+<v-app>
+    <AppBarComponent />
 
-    <todo-list-component />
-  </v-main>
+  <todo-list-component />
+    
+
+</v-app>
 </template>
 
 
 <script>
 import TodoListComponent from "./components/TodoListComponent.vue";
 import AppBarComponent from "./components/AppBarComponent.vue";
-
-// import items from './data/items';
 
 export default {
   name: "App",
