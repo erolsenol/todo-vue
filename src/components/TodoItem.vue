@@ -1,13 +1,10 @@
 <template>
-    
     <h4 v-html="'Title: \'' + username.title + '\' Order: \'' + username.order + '\''"></h4>
-    
-        
 </template>
 
 <script>
 export default {
-    name: 'UserComponent',
+    name: 'TodoItem',
     props: {
         username: Object
     },
@@ -18,3 +15,7 @@ export default {
     }
 }
 </script>
+
+<style>
+
+</style>
