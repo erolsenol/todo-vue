@@ -2,7 +2,7 @@
 <v-app>
     <AppBarComponent />
 
-  <todo-list-component />
+  <TodoListComponent />
     
 
 </v-app>

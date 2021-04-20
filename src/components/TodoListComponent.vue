@@ -1,116 +1,80 @@
 <template>
- <v-main>
-    <v-layout row wrap>
-    
-      <v-flex xs4>
-        <v-card>
-          <v-card-text class="px-0">
-            <ul class="list-group">
-              <li
-                v-on:click.prevent="Clicked(item)"
-                v-for="item in todoItems"
-                :key="item.id"
-                class="list-group-item list-group-item-success"
-              >
-                <TodoItem :username="item" />
-              </li>
-            </ul>
-          </v-card-text>
-        </v-card>
-      </v-flex>
+  <v-main>
+    <div>
+      <v-container>
+        <v-row>
+          <v-col xs="12" sm="10" md="7" lg="6" xl="5" cols="auto">
+            <Table
+              :tableItem="todoItems"
+              v-on:todoItemSelected="itemSelected"
+              v-on:click.prevent="Clicked(item)"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="auto" xs="8" sm="6" md="5" lg="4" xl="3">
+            <v-text-field
+              label="Title"
+              v-model="itemTitle"
+              :itemTitle="rules"
+              required
+              hide-details="auto"
+            ></v-text-field>
+          </v-col>
 
-      <v-flex xs4>
-        <v-card>
-          <v-card-text class="px-0">
-            <v-form ref="form1" v-on:submit.prevent="AddToDo">
-              <div class="form-group">
-                <label for="exampleTitle">Title</label>
-                <v-text-field
-                  v-model="itemTitle"
-                  :rules="rules"
-                  required
-                ></v-text-field>
-              </div>
-              <button type="submit" class="btn btn-primary" id="todoID">
-                Add
-              </button>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-
-      <v-flex xs4>
-        <v-card>
-          <v-card-text class="px-0">
-            <ul class="list-group">
-              <li
-                v-on:click.prevent="Clicked(ditem)"
-                v-for="ditem in Ditems"
-                :key="ditem.id"
-                class="list-group-item list-group-item-danger"
-              >
-                <TodoItem :username="ditem" />
-              </li>
-            </ul>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-    </v-layout>
-
-   
-      <v-img
-        alt="Vue logo"
-        max-height="200"
-        max-width="200"
-        src="../assets/logo.png"
-      ></v-img>
-
-      <hr />
-      
-     
-      <div>
-        <input type="text" name="" id="del" placeholder="Order Key" />
-        <v-btn color="error" v-on:click.prevent="DeleteToDo"> Delete</v-btn>
-      </div>
-      <hr />
- 
+          <v-col cols="auto">
+            <v-btn depressed rounded medium v-on:click="AddToDo"> Add </v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn
+              depressed
+              rounded
+              medium
+              color="error"
+              v-on:click="DeleteToDo(updateItem)"
+              :disable="!!itemTitle"
+            >
+              Delete
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
   </v-main>
 </template>
 
 <script>
-import TodoItem from "./TodoItem";
 import items from "../data/items";
-
+import Table from "./Table";
 
 export default {
   name: "TodoListComponent",
   components: {
-    TodoItem,
-  
+    Table,
   },
+  props: {},
   data: function () {
     return {
       itemTitle: "",
+      updateItem: 0,
       rules: [
         (value) => !!value || "Required.",
         (value) => (value && value.length >= 3) || "Min 3 characters",
       ],
       todoItems: items,
       Ditems: [],
-      updateItem: 0,
     };
   },
   methods: {
-    DeleteToDo: function () {
-      const del = document.getElementById("del").value;
-      const index = this.todoItems.findIndex((item) => item.id == del);
-
-      if (index > 0) {
-        this.Ditems.push(this.todoItems[index]);
-
-        this.todoItems.splice(index, 1);
-        console.log(this.todoItems.length);
-        console.log(this.Ditems.length);
+    itemSelected(item) {
+      this.itemTitle = item.title;
+      this.updateItem = item.id;
+    },
+    DeleteToDo: function (updateItem) {
+      if (this.updateItem > 0) {
+        this.todoItems.splice(updateItem, 1);
+        this.updateItem = 0;
+        this.itemTitle = "";
       } else {
         window.alert("Girilen Değerde Order Bulunamadı");
       }
@@ -123,13 +87,9 @@ export default {
         this.todoItems[index].title = this.itemTitle;
 
         this.itemTitle = "";
-        // document.getElementById('exampleTitle').value = null;
-        // document.getElementById('todoID').innerText = "Add";
         this.updateItem = 0;
-      } else {
-        let itemsLenght = this.todoItems.length + this.Ditems.length;
-
-        console.log(itemsLenght);
+      } else if (this.itemTitle.length > 3) {
+        let itemsLenght = this.todoItems.length;
 
         const date = new Date();
         const djson = JSON.stringify(date);
@@ -145,11 +105,12 @@ export default {
         ];
 
         this.todoItems.push(newitem[0]);
+        this.itemTitle = null;
+      } else {
+        window.alert("En az 4 karakter olmalıdır title");
       }
     },
     Clicked: function (item) {
-      document.getElementById("exampleTitle").value = item.title;
-      document.getElementById("todoID").innerText = "Update";
       this.updateItem = item.id;
     },
   },
