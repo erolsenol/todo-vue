@@ -23,10 +23,11 @@
           </v-col>
 
           <v-col cols="auto">
-            <v-btn depressed rounded medium v-on:click="AddToDo"> Add </v-btn>
+            <v-btn depressed rounded medium v-on:click="AddToDo" :color="isUpdating ? 'primary' : ''"> {{ isUpdating ? "Update" : "Add" }} </v-btn>
           </v-col>
           <v-col cols="auto">
             <v-btn
+            v-if="isUpdating"
               depressed
               rounded
               medium
@@ -65,6 +66,12 @@ export default {
       Ditems: [],
     };
   },
+  computed: {
+    isUpdating: function() {
+      return this.updateItem > 0
+    }
+  },
+  watch: {},
   methods: {
     itemSelected(item) {
       this.itemTitle = item.title;
