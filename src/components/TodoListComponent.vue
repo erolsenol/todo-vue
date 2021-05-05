@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import items from "../data/items";
 import Table from "./Table";
+import axios from "axios";
 
 export default {
   name: "TodoListComponent",
@@ -62,57 +62,60 @@ export default {
         (value) => !!value || "Required.",
         (value) => (value && value.length >= 3) || "Min 3 characters",
       ],
-      todoItems: items,
-      Ditems: [],
+      todoItems: [],
     };
+  },
+  mounted: async function() {
+      this.todoItems = (await axios.get("https://todowebapi.herokuapp.com/items")).data;
   },
   computed: {
     isUpdating: function() {
       return this.updateItem > 0
     }
   },
-  watch: {},
+  watch: {
+
+  },
   methods: {
     itemSelected(item) {
       this.itemTitle = item.title;
       this.updateItem = item.id;
     },
-    DeleteToDo: function (updateItem) {
+    DeleteToDo: async function (updateItem) {
       if (this.updateItem > 0) {
-        this.todoItems.splice(updateItem, 1);
-        this.updateItem = 0;
-        this.itemTitle = "";
+        const res = await axios.delete("https://todowebapi.herokuapp.com/items/" + this.updateItem);
+        if(await res.status == 204){
+          this.todoItems.splice((updateItem), 1);
+          this.updateItem = 0;
+          this.itemTitle = "";
+        }
       } else {
         window.alert("Girilen Değerde Order Bulunamadı");
       }
     },
-    AddToDo: function () {
+    AddToDo: async function () {
       if (this.updateItem > 0) {
-        const index = this.todoItems.findIndex(
-          (item) => item.id == this.updateItem
-        );
-        this.todoItems[index].title = this.itemTitle;
+        var postData = {
+          'title': this.itemTitle
+        };
 
-        this.itemTitle = "";
-        this.updateItem = 0;
+        const res = await axios.put("https://todowebapi.herokuapp.com/items/" + this.updateItem, postData);
+        if(res.status == 204){
+          this.todoItems[(this.updateItem - 1)].title = postData.title;
+          this.itemTitle = "";
+          this.updateItem = 0;
+        }
       } else if (this.itemTitle.length > 3) {
-        let itemsLenght = this.todoItems.length;
-
-        const date = new Date();
-        const djson = JSON.stringify(date);
-
-        const newitem = [
-          {
-            id: itemsLenght + 1,
-            title: this.itemTitle,
-            order: itemsLenght + 1,
-            completed: false,
-            createdOn: djson,
-          },
-        ];
-
-        this.todoItems.push(newitem[0]);
-        this.itemTitle = null;
+        const postData = {
+          title: this.itemTitle
+        };
+        const res = await axios.post("https://todowebapi.herokuapp.com/items", postData);
+        if(res.status == 201){
+          this.todoItems.push(res.data);
+          this.itemTitle = null;
+        } else {
+          window.alert("Hata Kodu " + res.status);
+        }
       } else {
         window.alert("En az 4 karakter olmalıdır title");
       }
